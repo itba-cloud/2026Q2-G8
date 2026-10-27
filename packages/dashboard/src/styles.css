@@ -1,0 +1,146 @@
+:root {
+  color-scheme: dark;
+  --bg: #0e1420;
+  --panel: #171f2e;
+  --border: #263349;
+  --text: #dbe4f0;
+  --muted: #8195ad;
+  --ok: #34c98e;
+  --excursion: #f0596b;
+  --stale: #8195ad;
+  --accent: #5aa9f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.app { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+
+.topbar { display: flex; align-items: baseline; gap: 12px; }
+.topbar h1 { font-size: 22px; letter-spacing: 0.02em; margin: 0 0 16px; }
+
+h2 { font-size: 16px; color: var(--muted); margin: 32px 0 12px; }
+
+.units {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.unit-card {
+  display: block; width: 100%; text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  color: inherit; font: inherit;
+  cursor: pointer;
+}
+.unit-card.selected { border-color: var(--accent); }
+.unit-card header { display: flex; justify-content: space-between; align-items: center; }
+.unit-id { font-weight: 600; }
+.unit-card .temp { font-size: 32px; font-weight: 700; margin: 6px 0 2px; }
+.status-excursion .temp { color: var(--excursion); }
+.status-stale .temp { color: var(--stale); }
+.meta { display: flex; gap: 12px; color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+.sensor-data { display: flex; flex-wrap: wrap; gap: 12px; color: var(--text); font-size: 12px; margin-bottom: 8px; }
+.description { color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+.badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.badge-ok { color: var(--ok); }
+.badge-excursion { color: var(--excursion); }
+.badge-stale { color: var(--stale); }
+
+.sparkline-band { fill: rgba(90, 169, 245, 0.12); }
+.sparkline-line { stroke: var(--accent); stroke-width: 1.5; }
+.sparkline-empty { color: var(--muted); font-size: 12px; height: 60px; display: flex; align-items: center; }
+
+.detail { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 24px; overflow-x: auto; }
+
+table.alerts { width: 100%; border-collapse: collapse; }
+table.alerts th, table.alerts td {
+  text-align: left; padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+table.alerts th { color: var(--muted); font-weight: 500; font-size: 12px; }
+
+table.shadow { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 12px; }
+table.shadow th, table.shadow td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--border); }
+table.shadow th { font-weight: 500; }
+
+.empty { color: var(--muted); }
+
+.spacer { flex: 1; }
+.muted { color: var(--muted); }
+.error { color: var(--excursion); margin: 4px 0; }
+button.link { background: none; border: none; color: var(--accent); cursor: pointer; font: inherit; padding: 0; }
+
+.login { display: grid; place-items: center; min-height: 80vh; }
+.login-card {
+  display: grid; gap: 12px; width: min(360px, 100%);
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 24px;
+}
+.login-card h1 { margin: 0; }
+.login-card label { display: grid; gap: 4px; color: var(--muted); }
+.login-card input, .form input, .form select {
+  background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 8px;
+  font: inherit;
+}
+.login-card button[type=submit], .form button.primary {
+  background: var(--accent); color: #0b1220; border: none; border-radius: 6px; padding: 10px; font: inherit; cursor: pointer;
+}
+button:disabled { opacity: 0.6; cursor: default; }
+
+.form { display: grid; gap: 8px; max-width: 320px; }
+.form label { display: grid; gap: 4px; color: var(--muted); }
+.form h3 { margin: 16px 0 4px; font-size: 14px; color: var(--muted); }
+tr.acked td { color: var(--muted); }
+
+/* Units map. Height is not cosmetic: without it the container is 0 px tall
+   and Leaflet renders nothing at all. */
+.map-toolbar { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+.units-map {
+  height: 360px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+/* Leaflet writes stroke/fill as presentation attributes, which have the lowest
+   precedence in the cascade, so these rules win without !important and the
+   palette above stays the single source of colour. */
+/* Order matters and is the contract: .unit-marker-selected has the same
+   specificity as the three status rules, so it only wins by coming last.
+   Reordering these five rules breaks the selection highlight with every test
+   still green -- markerClass() pins the class names, not the cascade. */
+.unit-marker { stroke-width: 2; fill-opacity: 0.55; cursor: pointer; }
+.unit-marker-ok        { stroke: var(--ok);        fill: var(--ok); }
+.unit-marker-excursion { stroke: var(--excursion); fill: var(--excursion); }
+.unit-marker-stale     { stroke: var(--stale);     fill: var(--stale); }
+.unit-marker-selected  { stroke: var(--accent); stroke-width: 4; }
+
+/* Contrast for Leaflet's own controls on the dark theme. The attribution is a
+   requirement of the OSM tile usage policy: it may be restyled, never hidden. */
+.leaflet-container { background: var(--panel); }
+.leaflet-control-attribution {
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 11px;
+}
+.leaflet-control-attribution a { color: var(--accent); }
+.leaflet-control-zoom a {
+  background: var(--panel);
+  border-color: var(--border);
+  color: var(--text);
+}
+.leaflet-control-zoom a:hover { background: var(--border); color: var(--text); }
+.leaflet-bar { border-color: var(--border); }

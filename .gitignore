@@ -1,0 +1,27 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Terraform local state and generated variables
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+*.auto.tfvars
+
+docs/MIGRACION_TERRAFORM.md
+
+# credenciales y certificados de dispositivos — NUNCA commitear
+certs/
+*.pem
+*.key
+.env
+.env.*
+!packages/*/.env.example
+docs/superpowers
+
+# Terraform plan outputs (contain state snapshot + variable values) — never commit
+tfplan
+*.tfplan
+plan.txt
+crash.log
